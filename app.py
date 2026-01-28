@@ -18,7 +18,7 @@ if st.button("Agregar"):
     st.session_state.history.append(num)
 
 history = st.session_state.history
-st.write("Historial:", history)
+st.write("Últimos 6 números:", history[-6:])
 
 def vecinos_extendidos(n):
     idx = EUROPEAN_ROULETTE.index(n)
