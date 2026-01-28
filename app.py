@@ -60,3 +60,39 @@ if len(history) >= 51:
             st.write("Números posteriores:", siguientes)
             st.write("Coinciden con vecinos:", coincidencias)
             st.write("❗ Faltan por aparecer:", faltantes)
+def vecinos_ruleta(num, rango=2):
+    idx = EUROPEAN_ROULETTE.index(num)
+    vecinos = set()
+    for i in range(-rango, rango + 1):
+        vecinos.add(EUROPEAN_ROULETTE[(idx + i) % len(EUROPEAN_ROULETTE)])
+    return vecinos
+
+if len(history) >= 10:
+    st.subheader("🔥 Terminales calientes (últimos 10 tiros)")
+
+    ultimos_10 = history[-10:]
+
+    # Agrupar por terminal
+    terminales = {}
+    for n in ultimos_10:
+        t = n % 10
+        terminales.setdefault(t, []).append(n)
+
+    scores = {}
+
+    for terminal, nums in terminales.items():
+        score = 0
+        for n in nums:
+            vecinos = vecinos_ruleta(n, 2)
+            score += sum(1 for x in ultimos_10 if x in vecinos)
+        scores[terminal] = score
+
+    max_score = max(scores.values())
+    calientes = {t: s for t, s in scores.items() if s >= max_score - 1}
+
+    st.write("Últimos 10 números:", ultimos_10)
+
+    for t, s in calientes.items():
+        st.markdown(f"### 🔥 Terminal {t}")
+        st.write("Score térmico:", s)
+        st.write("Números:", terminales[t])
